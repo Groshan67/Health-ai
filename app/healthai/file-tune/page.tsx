@@ -1,9 +1,9 @@
 "use client";
 
-import axios from "axios";
+//import axios from "axios";
 import React, { useState } from "react";
 import styles from "./page.module.css";
-
+import { ins } from "@/app/healthai/file-tune/my-ins"
 import WeatherWidget from "../../components/weather-widget";
 import { ResponseDisplay } from "@/app/components/ResponseDisplay";
 import { InputForm } from "@/app/components/InputForm";
@@ -24,10 +24,10 @@ export default function Home() {
             setUploading(true); // نمایش پیام آپلود برای فایل جدید
         }
     };
-
     const handleSubmit = async () => {
         if (!text && !image) {
             alert("لطفاً متنی وارد کرده یا یک تصویر پیوست کنید.");
+
             return;
         }
 
@@ -38,7 +38,14 @@ export default function Home() {
             const reader = new FileReader();
             reader.onload = async () => {
                 const imageBase64 = image ? reader.result?.toString() : null;
-                console.log("imageBase64", imageBase64);
+
+                // Create a new thread
+                export async function POST() {
+                    const thread = await openai.beta.threads.create();
+                    return Response.json({ threadId: thread.id });
+                }
+
+
                 const { data } = await axios.post(
                     "https://api.openai.com/v1/chat/completions",
                     {
@@ -46,8 +53,8 @@ export default function Home() {
                         messages: [
                             {
                                 role: "system",
-                                content:
-                                    "You are a highly experienced specialist doctor tasked with diagnosing patients based on the information they provide. The patient will share the following details: age, gender, medical history, and key symptoms. They may also upload medical images such as blood test results, ECGs, echocardiograms, X-rays, or ultrasounds.Your task is to carefully analyze the provided information and images to determine the patient's potential illness and offer appropriate recommendations. If necessary, suggest that the patient consult a specific specialist or undergo additional tests.",
+                                content: ins,
+
                             },
                             {
                                 role: "user",
@@ -68,17 +75,30 @@ export default function Home() {
                     }
                 );
 
+
                 setResponse(data);
-                setLoading(false);
+
+
             };
 
-            if (image) reader.readAsDataURL(image);
-            else reader.onload();
+            if (image) {
+                reader.readAsDataURL(image); // تصویر موجود است، خواندن فایل آغاز می‌شود
+            } else {
+                const imageBase64 = null; // تصویری وجود ندارد، مقدار Base64 را null تنظیم کنید
+                //handleRequest(imageBase64); // تابع جداگانه برای مدیریت درخواست
+            }
+
+            reader.onload = async () => {
+                const imageBase64 = reader.result?.toString() || null;
+                // handleRequest(imageBase64);
+            };
         } catch (error: any) {
             console.error("Error:", error);
             alert("خطا در ارسال درخواست. لطفاً دوباره تلاش کنید.");
             setLoading(false);
         }
+
+
     };
 
     return (

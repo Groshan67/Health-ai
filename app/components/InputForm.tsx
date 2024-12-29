@@ -55,7 +55,7 @@ export const InputForm = ({
                     {/* نمایش وضعیت بارگذاری */}
                     {loading && (
                         <p className="mt-1 text-xs text-green-500 animate-pulse">
-                            در حال آپلود...
+                            Complete.
                         </p>
                     )}
                 </div>

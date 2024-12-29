@@ -7,7 +7,7 @@ const vazirmatn = Vazirmatn({ subsets: ["arabic"], weight: "400" });
 
 export const metadata = {
   title: "MyRisk|دستیار پزشک هوشمند",
-  description: "A using the Assistants API with OpenAI",
+  description: "A using the Assistants API with HealthAI",
   icons: {
     icon: "/openai.svg",
   },
