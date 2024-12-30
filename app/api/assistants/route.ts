@@ -1,5 +1,5 @@
 import { openai } from "@/app/openai";
-import {ins} from "@/app/healthai/file-tune/my-ins"
+import { ins } from "@/app/api/completion/my-ins"
 
 export const runtime = "nodejs";
 

@@ -14,6 +14,7 @@ const Home = () => {
   const categories = {
     ['مدل 1']: "all",
     ['مدل 2']: "file-tune",
+    ['مدل 3']: "completion",
   };
 
   return (

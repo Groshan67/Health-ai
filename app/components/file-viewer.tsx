@@ -22,11 +22,12 @@ const FileViewer = () => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchFiles();
-    }, 1000);
+    // const interval = setInterval(() => {
+    //   fetchFiles();
+    // }, 1000);
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
+    fetchFiles();
   }, []);
 
   const fetchFiles = async () => {
@@ -42,6 +43,7 @@ const FileViewer = () => {
       method: "DELETE",
       body: JSON.stringify({ fileId }),
     });
+    fetchFiles();
   };
 
   const handleFileUpload = async (event) => {
@@ -53,6 +55,7 @@ const FileViewer = () => {
         method: "POST",
         body: data,
       });
+    fetchFiles();
   };
 
   return (

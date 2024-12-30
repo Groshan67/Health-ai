@@ -10,15 +10,15 @@ export const InputForm = ({
 }: {
     text: string;
     setText: React.Dispatch<React.SetStateAction<string>>;
-    handleSubmit: () => void;
+    handleSubmit: (text: string) => void;
     handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
     fileName: string | null;
     loading: boolean;
 }) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            e.preventDefault(); // جلوگیری از رفتن به خط بعد
-            handleSubmit();
+            e.preventDefault();
+            handleSubmit(text);
         }
     };
 
@@ -30,12 +30,11 @@ export const InputForm = ({
                     placeholder="سوال خود را اینجا بپرسید..."
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    onKeyDown={handleKeyDown} // اضافه کردن رویداد برای دکمه Enter
+                    onKeyDown={handleKeyDown}
                     className="w-full p-3 pr-20 pl-16 rounded-lg text-sm placeholder-gray-400 focus:ring focus:ring-gray-200"
                     dir="rtl"
                 />
 
-                {/* آپلود فایل */}
                 <div className="relative">
                     <label className="cursor-pointer">
                         <AiOutlinePaperClip className="w-6 h-6 text-gray-500 hover:text-green-500" />
@@ -47,22 +46,21 @@ export const InputForm = ({
                         />
                     </label>
 
-                    {/* نمایش نام فایل آپلودشده */}
                     {fileName && (
                         <p className="mt-1 text-xs text-gray-600">{fileName}</p>
                     )}
 
-                    {/* نمایش وضعیت بارگذاری */}
                     {loading && (
                         <p className="mt-1 text-xs text-green-500 animate-pulse">
-                            Complete.
+                            در حال آپلود...
                         </p>
                     )}
                 </div>
 
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit(text)}
                     className="text-green-500 hover:text-green-600"
+                    disabled={loading || !text.trim()}
                 >
                     <AiOutlineSend className="w-6 h-6" />
                 </button>

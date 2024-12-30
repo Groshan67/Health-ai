@@ -1,9 +1,9 @@
 "use client";
 
-//import axios from "axios";
+
 import React, { useState } from "react";
 import styles from "./page.module.css";
-import { ins } from "@/app/healthai/file-tune/my-ins"
+
 import WeatherWidget from "../../components/weather-widget";
 import { ResponseDisplay } from "@/app/components/ResponseDisplay";
 import { InputForm } from "@/app/components/InputForm";
@@ -24,10 +24,10 @@ export default function Home() {
             setUploading(true); // نمایش پیام آپلود برای فایل جدید
         }
     };
+
     const handleSubmit = async () => {
         if (!text && !image) {
             alert("لطفاً متنی وارد کرده یا یک تصویر پیوست کنید.");
-
             return;
         }
 
@@ -39,66 +39,25 @@ export default function Home() {
             reader.onload = async () => {
                 const imageBase64 = image ? reader.result?.toString() : null;
 
-                // Create a new thread
-                export async function POST() {
-                    const thread = await openai.beta.threads.create();
-                    return Response.json({ threadId: thread.id });
-                }
-
-
-                const { data } = await axios.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    {
-                        model: "gpt-4o",
-                        messages: [
-                            {
-                                role: "system",
-                                content: ins,
-
-                            },
-                            {
-                                role: "user",
-                                content: [
-                                    { type: "text", text },
-                                    ...(imageBase64
-                                        ? [{ type: "image_url", image_url: { url: imageBase64 } }]
-                                        : []),
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-                        },
-                    }
-                );
-
-
-                setResponse(data);
-
-
+                const createMessage = async () => {
+                    const res = await fetch(`/api/completion/`, {
+                        method: "POST",
+                        body: JSON.stringify({ text, imageBase64 })
+                    });
+                    const data = await res.json();
+                    setResponse(data);
+                    setLoading(false);
+                };
+                createMessage();
             };
 
-            if (image) {
-                reader.readAsDataURL(image); // تصویر موجود است، خواندن فایل آغاز می‌شود
-            } else {
-                const imageBase64 = null; // تصویری وجود ندارد، مقدار Base64 را null تنظیم کنید
-                //handleRequest(imageBase64); // تابع جداگانه برای مدیریت درخواست
-            }
-
-            reader.onload = async () => {
-                const imageBase64 = reader.result?.toString() || null;
-                // handleRequest(imageBase64);
-            };
+            if (image) reader.readAsDataURL(image);
+            else reader.onload();
         } catch (error: any) {
             console.error("Error:", error);
             alert("خطا در ارسال درخواست. لطفاً دوباره تلاش کنید.");
             setLoading(false);
         }
-
-
     };
 
     return (
