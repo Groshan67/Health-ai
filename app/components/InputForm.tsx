@@ -17,8 +17,10 @@ export const InputForm = ({
 }) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            e.preventDefault();
-            handleSubmit(text);
+            if (text.trim() || fileName) {
+                handleSubmit(text);
+            }
+
         }
     };
 
@@ -50,17 +52,21 @@ export const InputForm = ({
                         <p className="mt-1 text-xs text-gray-600">{fileName}</p>
                     )}
 
-                    {loading && (
+                    {/* {loading && (
                         <p className="mt-1 text-xs text-green-500 animate-pulse">
                             در حال آپلود...
                         </p>
-                    )}
+                    )} */}
                 </div>
 
                 <button
-                    onClick={() => handleSubmit(text)}
+                    onClick={() => {
+                        if (text.trim() || fileName) {
+                            handleSubmit(text);
+                        }
+                    }}
                     className="text-green-500 hover:text-green-600"
-                    disabled={loading || !text.trim()}
+                    disabled={loading || (!text.trim() && !fileName)}
                 >
                     <AiOutlineSend className="w-6 h-6" />
                 </button>

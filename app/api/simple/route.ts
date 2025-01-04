@@ -9,14 +9,11 @@ export async function POST(request: Response) {
   try {
     let contents = null;
 
-    const model = "gpt-4o";
+    const model = "gpt-3.5-turbo";
     if (!content[1]) {
       contents = content[0];
     } else {
-      contents = [
-        { type: "text", text: content[1] },
-        { type: "image_url", image_url: { url: content[0] } },
-      ];
+      contents = content[1];
     }
 
     // تنظیم response به عنوان یک Stream

@@ -1,8 +1,11 @@
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat';
 
-export const openai = new OpenAI();
-
+// تعریف کلاینت OpenAI
+export const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    organization: process.env.OPENAI_ORG_ID,
+});
 
 // تعریف تایپ برای پیام‌های ورودی
 type MessageRole = 'system' | 'user' | 'assistant';

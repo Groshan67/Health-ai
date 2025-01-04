@@ -1,13 +1,10 @@
-export const Skeleton = ({
-    width = "100%",
-    height = "20px",
-    borderRadius = "8px"
-}: { width?: string; height?: string; borderRadius?: string }) => (
-    <div
-        className="bg-gray-300 animate-pulse space-y-4 ml-auto mb-4"
-        style={{ width, height, borderRadius }}
-    ></div>
-);
+export const Skeleton = () => {
+    return (
+        <div className="group relative w-full mb-4 flex justify-start">
+            <div className="relative max-w-[95%] px-4 py-3 rounded-2xl shadow-sm
+          bg-gradient-to-br from-gray-50 to-gray-100 mr-auto rounded-tl-none border border-gray-100">
 
-
-
+            </div>
+        </div>
+    );
+};

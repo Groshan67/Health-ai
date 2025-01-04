@@ -68,7 +68,7 @@ const Chat = () => {
     addMessage(state.text, 'user');
 
     try {
-      const response = await fetch('/api/completion', {
+      const response = await fetch('/api/simple', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -187,7 +187,6 @@ const Chat = () => {
           {/* Show skeleton only when loading */}
           {state.loading && (
             <>
-
               <Skeleton /> {/* You can show multiple skeletons to indicate longer response */}
             </>
           )}

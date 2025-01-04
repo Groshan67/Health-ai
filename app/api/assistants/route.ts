@@ -10,28 +10,28 @@ export async function POST() {
     name: "Doctor Assistant",
     model: "gpt-4o",
     tools: [
-      { type: "code_interpreter" },
-      {
-        type: "function",
-        function: {
-          name: "Radiologist",
-          description: "Diagnosis of disease in radiology images",
-          parameters: {
-            type: "object",
-            properties: {
-              location: {
-                type: "string",
-                description: "The world",
-              },
-              unit: {
-                type: "string",
-                enum: ["c", "f"],
-              },
-            },
-            required: ["location"],
-          },
-        },
-      },
+      // { type: "code_interpreter" },
+      // {
+      //   type: "function",
+      //   function: {
+      //     name: "Radiologist",
+      //     description: "Diagnosis of disease in radiology images",
+      //     parameters: {
+      //       type: "object",
+      //       properties: {
+      //         location: {
+      //           type: "string",
+      //           description: "The world",
+      //         },
+      //         unit: {
+      //           type: "string",
+      //           enum: ["c", "f"],
+      //         },
+      //       },
+      //       required: ["location"],
+      //     },
+      // },
+      // },
       { type: "file_search" },
     ],
   });

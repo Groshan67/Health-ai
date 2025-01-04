@@ -5,6 +5,7 @@ import { assistantId } from "./assistant-config";
 const inter = Inter({ subsets: ["latin"] });
 const vazirmatn = Vazirmatn({ subsets: ["arabic"], weight: "400" });
 
+
 export const metadata = {
   title: "MyRisk|دستیار پزشک هوشمند",
   description: "A using the Assistants API with HealthAI",
