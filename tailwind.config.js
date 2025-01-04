@@ -30,6 +30,14 @@ module.exports = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
+      colors: {
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+      },
     },
   },
   plugins: [],

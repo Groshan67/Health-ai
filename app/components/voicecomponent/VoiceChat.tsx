@@ -1,23 +1,61 @@
 // ./app/components/voicecomponent/VoiceChat.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChatStore } from '@/app/store/chatStore';
 import { AudioRecorder } from '@/app/components/voicecomponent/AudioRecorder';
 import { ChatMessage } from '../voicecomponent/ChatMessage';
 import { TypingIndicator } from './TypingIndicator';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, AlertCircle } from 'lucide-react';
 import type { Message } from '@/app/types';
-
-
+import { Alert, AlertDescription } from '@/app/components/voicecomponent/alert';
 
 export function VoiceChat() {
     const { currentSession, addMessage } = useChatStore();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [micPermissionError, setMicPermissionError] = useState<string>('');
+    const [isMobileBrowser, setIsMobileBrowser] = useState(false);
+
+    useEffect(() => {
+        // Check if running on mobile browser
+        const checkMobile = () => {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /iphone|ipad|ipod|android|blackberry|windows phone/g.test(userAgent);
+            setIsMobileBrowser(isMobile);
+        };
+
+        checkMobile();
+
+        // Check initial microphone permission
+        checkMicrophonePermission();
+    }, []);
+
+    const checkMicrophonePermission = async () => {
+        try {
+            const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+
+            result.onchange = () => {
+                if (result.state === 'denied') {
+                    setMicPermissionError('لطفا دسترسی به میکروفون را در تنظیمات مرورگر فعال کنید');
+                } else {
+                    setMicPermissionError('');
+                }
+            };
+        } catch (error) {
+            console.log('Permission API not supported');
+        }
+    };
 
     const handleAudioRecorded = async (audioBlob: Blob) => {
         setIsProcessing(true);
         try {
+            // Special handling for iOS Safari
+            if (isMobileBrowser && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
+                await document.documentElement.requestFullscreen().catch(() => {
+                    console.log('Fullscreen not available');
+                });
+            }
+
             // Transcribe audio
             const formData = new FormData();
             formData.append('audio', audioBlob);
@@ -26,6 +64,10 @@ export function VoiceChat() {
                 method: 'POST',
                 body: formData,
             });
+
+            if (!transcriptionResponse.ok) {
+                throw new Error('خطا در پردازش صدا');
+            }
 
             const { text } = await transcriptionResponse.json();
 
@@ -47,6 +89,10 @@ export function VoiceChat() {
                 }),
             });
 
+            if (!chatResponse.ok) {
+                throw new Error('خطا در دریافت پاسخ');
+            }
+
             const { response } = await chatResponse.json();
 
             // Add assistant message
@@ -59,19 +105,52 @@ export function VoiceChat() {
             speak(response);
         } catch (error) {
             console.error('Error processing audio:', error);
+            setMicPermissionError(error instanceof Error ? error.message : 'خطا در پردازش صدا');
         } finally {
             setIsProcessing(false);
+            // Exit fullscreen if we're in it
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => { });
+            }
         }
     };
 
     const speak = (text: string) => {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'fa-IR';
-        speechSynthesis.speak(utterance);
+
+        // Handle mobile browser speech synthesis
+        if (isMobileBrowser) {
+            // Clear any existing utterances
+            speechSynthesis.cancel();
+            // Add a slight delay to ensure proper playback on mobile
+            setTimeout(() => {
+                speechSynthesis.speak(utterance);
+            }, 100);
+        } else {
+            speechSynthesis.speak(utterance);
+        }
     };
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">
+            {/* Error Alert */}
+            {micPermissionError && (
+                <Alert variant="destructive" className="m-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="mr-2">
+                        {micPermissionError}
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {/* Mobile Instructions */}
+            {isMobileBrowser && !micPermissionError && (
+                <div className="text-sm text-gray-500 p-4 text-center">
+                    برای ضبط صدا، لطفا اجازه دسترسی به میکروفون را تایید کنید
+                </div>
+            )}
+
             {/* Container for chat messages */}
             <div className="flex-3 overflow-y-auto p-4 space-y-4">
                 {currentSession?.messages.map((message: Message) => (
@@ -92,7 +171,7 @@ export function VoiceChat() {
                     {/* Audio Recorder button */}
                     <AudioRecorder
                         onAudioRecorded={handleAudioRecorded}
-                        isDisabled={isProcessing}
+                        isDisabled={isProcessing || !!micPermissionError}
                     />
 
                     {/* Processing message */}
@@ -106,5 +185,4 @@ export function VoiceChat() {
             </div>
         </div>
     );
-
 }
