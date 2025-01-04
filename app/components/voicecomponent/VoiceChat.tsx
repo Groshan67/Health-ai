@@ -73,7 +73,7 @@ export function VoiceChat() {
     return (
         <div className="flex flex-col h-screen bg-gray-50">
             {/* Container for chat messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-3 overflow-y-auto p-4 space-y-4">
                 {currentSession?.messages.map((message: Message) => (
                     <ChatMessage key={message.id} message={message} />
                 ))}
@@ -88,7 +88,8 @@ export function VoiceChat() {
 
             {/* Bottom section with recorder and processing message */}
             <div className="border-t border-gray-200 bg-white p-4">
-                <div className="max-w-3xl mx-auto flex items-center justify-between">
+                <div className="max-w-3xl mx-auto flex items-center justify-between sm:flex-col sm:space-y-4 sm:items-start">
+                    {/* Audio Recorder button */}
                     <AudioRecorder
                         onAudioRecorded={handleAudioRecorded}
                         isDisabled={isProcessing}
@@ -105,4 +106,5 @@ export function VoiceChat() {
             </div>
         </div>
     );
+
 }
