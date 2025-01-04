@@ -1,3 +1,6 @@
+// ./app/components/voicecomponent/TypingIndicator.tsx
+"use client";
+
 import { FC } from 'react';
 
 export const TypingIndicator: FC = () => {

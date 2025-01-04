@@ -13,7 +13,7 @@ export async function POST(request: Response) {
     if (!content[1]) {
       contents = content[0];
     } else {
-      contents = content[1];
+      contents = content[0];
     }
 
     // تنظیم response به عنوان یک Stream
