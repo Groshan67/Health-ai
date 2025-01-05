@@ -32,17 +32,27 @@ export function VoiceChat() {
 
     const checkMicrophonePermission = async () => {
         try {
-            const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+            // ابتدا بررسی کنید آیا API مجوزها پشتیبانی می‌شود
+            if (navigator.permissions && navigator.permissions.query) {
+                const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
 
-            result.onchange = () => {
                 if (result.state === 'denied') {
                     setMicPermissionError('لطفا دسترسی به میکروفون را در تنظیمات مرورگر فعال کنید');
-                } else {
+                } else if (result.state === 'granted') {
                     setMicPermissionError('');
                 }
-            };
+
+                // گوش دادن به تغییرات وضعیت مجوز
+                result.onchange = () => {
+                    if (result.state === 'denied') {
+                        setMicPermissionError('لطفا دسترسی به میکروفون را در تنظیمات مرورگر فعال کنید');
+                    } else {
+                        setMicPermissionError('');
+                    }
+                };
+            }
         } catch (error) {
-            console.log('Permission API not supported');
+            console.log('Permission API not supported, will request on record');
         }
     };
 
@@ -50,11 +60,11 @@ export function VoiceChat() {
         setIsProcessing(true);
         try {
             // Special handling for iOS Safari
-            if (isMobileBrowser && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
-                await document.documentElement.requestFullscreen().catch(() => {
-                    console.log('Fullscreen not available');
-                });
-            }
+            // if (isMobileBrowser && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
+            //     await document.documentElement.requestFullscreen().catch(() => {
+            //         console.log('Fullscreen not available');
+            //     });
+            // }
 
             // Transcribe audio
             const formData = new FormData();
