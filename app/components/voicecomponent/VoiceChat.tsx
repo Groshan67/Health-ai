@@ -30,6 +30,7 @@ export function VoiceChat() {
         checkMicrophonePermission();
     }, []);
 
+    // در VoiceChat.tsx، تابع checkMicrophonePermission را به این صورت آپدیت کنید
     const checkMicrophonePermission = async () => {
         try {
             // ابتدا بررسی کنید آیا API مجوزها پشتیبانی می‌شود

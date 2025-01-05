@@ -44,6 +44,7 @@ export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProp
 
     const startRecording = async () => {
         try {
+<<<<<<< HEAD
             // اضافه کردن لاگ برای بررسی پشتیبانی مرورگر
             console.log('Browser check:', {
                 userAgent: navigator.userAgent,
@@ -75,6 +76,25 @@ export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProp
     
             // تنظیمات ساده‌تر برای MediaRecorder
             const mediaRecorder = new MediaRecorder(stream);
+=======
+            // درخواست دسترسی به میکروفون
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    sampleRate: 44100, // نرخ نمونه‌برداری استاندارد
+                }
+            });
+
+            streamRef.current = stream;
+
+            const options: MediaRecorderOptions = {
+                mimeType: getSupportedMimeType()
+            };
+
+            const mediaRecorder = new MediaRecorder(stream, options);
+>>>>>>> 2e0dd71 (h)
             mediaRecorderRef.current = mediaRecorder;
             chunksRef.current = [];
     
@@ -84,6 +104,7 @@ export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProp
                     chunksRef.current.push(e.data);
                 }
             };
+<<<<<<< HEAD
     
             mediaRecorder.onerror = (event) => {
                 console.error('MediaRecorder error:', event);
@@ -119,6 +140,51 @@ export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProp
             setError(errorMessage);
             setHasPermission(false);
             cleanupRecording();
+=======
+
+            mediaRecorder.onstop = async () => {
+                try {
+                    const audioBlob = new Blob(chunksRef.current, { type: options.mimeType });
+                    onAudioRecorded(audioBlob);
+
+                    // آزادسازی منابع
+                    if (streamRef.current) {
+                        streamRef.current.getTracks().forEach(track => track.stop());
+                        streamRef.current = null;
+                    }
+                } catch (err) {
+                    console.error('Error processing recording:', err);
+                    setError('خطا در پردازش صدای ضبط شده');
+                }
+            };
+
+            // برای Safari: ضبط در قطعات کوچکتر
+            const timeslice = isSafari ? 100 : 1000;
+            mediaRecorder.start(timeslice);
+
+            setIsRecording(true);
+            setError(null);
+            setHasPermission(true);
+        } catch (err) {
+            console.error('Error starting recording:', err);
+            const error = err as Error;
+
+            switch (error.name) {
+                case 'NotAllowedError':
+                case 'PermissionDeniedError':
+                    setError('لطفاً دسترسی به میکروفون را در تنظیمات مرورگر فعال کنید');
+                    break;
+                case 'NotFoundError':
+                    setError('میکروفونی پیدا نشد');
+                    break;
+                case 'NotReadableError':
+                    setError('میکروفون در دسترس نیست');
+                    break;
+                default:
+                    setError('خطا در دسترسی به میکروفون');
+            }
+            setHasPermission(false);
+>>>>>>> 2e0dd71 (h)
         }
     };
     

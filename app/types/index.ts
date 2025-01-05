@@ -31,6 +31,7 @@ export interface Session {
 export interface AudioRecorderProps {
     onAudioRecorded: (blob: Blob) => void;
     isDisabled?: boolean;
+
 }
 
 export interface ChatMessageProps {
