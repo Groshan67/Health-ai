@@ -1,3 +1,5 @@
+// next.config.mjs
+
 /** @type {import('next').NextConfig} */
 import fs from 'fs';
 import path from 'path';
@@ -32,6 +34,28 @@ const nextConfig = {
         config.cache = false;
         return config;
     },
+    // اضافه کردن تنظیمات headers
+    async headers() {
+        return [
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Permissions-Policy',
+                        value: 'microphone=self'
+                    },
+                    {
+                        key: 'Cross-Origin-Opener-Policy',
+                        value: 'same-origin'
+                    },
+                    {
+                        key: 'Cross-Origin-Embedder-Policy',
+                        value: 'require-corp'
+                    }
+                ]
+            }
+        ];
+    }
 };
 
 export default nextConfig;

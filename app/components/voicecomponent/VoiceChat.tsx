@@ -59,7 +59,7 @@ export function VoiceChat() {
     const handleAudioRecorded = async (audioBlob: Blob) => {
         setIsProcessing(true);
         try {
-            // Special handling for iOS Safari
+           // Special handling for iOS Safari
             // if (isMobileBrowser && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
             //     await document.documentElement.requestFullscreen().catch(() => {
             //         console.log('Fullscreen not available');

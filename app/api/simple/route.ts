@@ -3,7 +3,7 @@ import { ins } from "./my-ins";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Response) {
+export async function POST(request: Request) {
   const { content } = await request.json();
 
   try {

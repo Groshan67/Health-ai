@@ -32,30 +32,37 @@ export default function Home() {
         }
 
         setLoading(true);
-        setUploading(false); // وقتی ارسال شروع شد، پیام آپلود غیرفعال می‌شود
+        setUploading(false);
 
         try {
-            const reader = new FileReader();
-            reader.onload = async () => {
-                const imageBase64 = image ? reader.result?.toString() : null;
-
-                const createMessage = async () => {
-                    const res = await fetch(`/api/completion/`, {
-                        method: "POST",
-                        body: JSON.stringify({ text, imageBase64 })
-                    });
-                    const data = await res.json();
-                    setResponse(data);
-                    setLoading(false);
+            // اگر تصویر وجود دارد، آن را به base64 تبدیل می‌کنیم
+            if (image) {
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    await sendRequest(reader.result?.toString());
                 };
-                createMessage();
-            };
-
-            if (image) reader.readAsDataURL(image);
-            else reader.onload();
+                reader.readAsDataURL(image);
+            } else {
+                // اگر فقط متن داریم، مستقیماً درخواست را ارسال می‌کنیم
+                await sendRequest(null);
+            }
         } catch (error: any) {
             console.error("Error:", error);
             alert("خطا در ارسال درخواست. لطفاً دوباره تلاش کنید.");
+            setLoading(false);
+        }
+    };
+
+    // تابع کمکی برای ارسال درخواست
+    const sendRequest = async (imageBase64: string | null) => {
+        try {
+            const res = await fetch(`/api/completion/`, {
+                method: "POST",
+                body: JSON.stringify({ text, imageBase64 })
+            });
+            const data = await res.json();
+            setResponse(data);
+        } finally {
             setLoading(false);
         }
     };
