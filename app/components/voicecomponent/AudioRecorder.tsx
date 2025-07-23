@@ -4,6 +4,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Square, AlertCircle } from 'lucide-react';
 import type { AudioRecorderProps } from '@/app/types';
+import { RiVoiceprintLine } from "react-icons/ri";
+import { AiOutlineAudioMuted } from "react-icons/ai";
+
+
 
 export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProps) {
     const [isRecording, setIsRecording] = useState(false);
@@ -179,16 +183,21 @@ export function AudioRecorder({ onAudioRecorded, isDisabled }: AudioRecorderProp
                 onClick={handleRecordClick}
                 disabled={isDisabled}
                 className={`
-                    p-3 rounded-full transition-all duration-200
-                    ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}
-                    ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-                `}
+                p-3 rounded-full transition-all duration-200
+                ${isRecording ? 'bg-white-500 hover:bg-white-600' : 'bg-white-500 hover:bg-white-600'}
+                ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
+            `}
                 aria-label={isRecording ? 'توقف ضبط' : 'شروع ضبط'}
             >
                 {isRecording ? (
-                    <Square className="w-6 h-6 text-white" />
+                    <AiOutlineAudioMuted
+                        className={`w-7 h-7 bg-gray-200 text-green-500 animate-recording`}
+                    />
                 ) : (
-                    <Mic className="w-6 h-6 text-white" />
+
+                    <RiVoiceprintLine className="w-7 h-7 text-gray-500 hover:text-green-500 transition-colors duration-300" />
+
+
                 )}
             </button>
         </div>

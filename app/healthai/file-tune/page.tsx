@@ -75,7 +75,7 @@ export default function Home() {
                 {loading ? (
                     <Skeleton /> // نمایش Skeleton در هنگام بارگذاری
                 ) : (
-                    <ResponseDisplay type={'user'} response={response} loading={loading} />
+                    <ResponseDisplay type={'user'} image="" response={response} loading={loading} />
                 )}
             </div>
 

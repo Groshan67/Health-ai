@@ -1,6 +1,6 @@
 
 import { openai } from "@/app/openai";
-import { ins } from "@/app/api/completion/my-ins";
+import { ins } from "./my-ins";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
             );
         }
 
-    
+
         // ساخت آرایه پیام‌ها برای OpenAI
         // const messagesForAI = [
         //     {
@@ -36,14 +36,14 @@ export async function POST(request: Request) {
             model: "gpt-4o",
             messages: [
                 {
-                  role: "system",
-                  content: ins,
+                    role: "system",
+                    content: ins,
                 },
                 {
-                  role: "user",
-                  content: message
+                    role: "user",
+                    content: message
                 },
-              ],
+            ],
             temperature: 0.7,
             max_tokens: 1000,
         });
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         console.error("Chat API Error:", error);
         return new Response(
             JSON.stringify({
-                error: "An error occurred while processing your request"
+                error: `An error occurred while processing your request : ${error}`
             }),
             {
                 status: 500,

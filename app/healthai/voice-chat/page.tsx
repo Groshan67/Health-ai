@@ -1,4 +1,4 @@
-import { VoiceChat } from '@/app/components/voicecomponent/VoiceChat';
+//import { VoiceChat } from '@/app/components/voicecomponent/VoiceChat';
 import WeatherWidget from "@/app/components/weather-widget";
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
                     <WeatherWidget />
                 </h1>
                 <div className="w-full">
-                    <VoiceChat />
+                    {/* <VoiceChat /> */}
                 </div>
             </div>
         </main>

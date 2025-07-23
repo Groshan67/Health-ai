@@ -11,3 +11,5 @@ export const FileUpload = ({ handleImageUpload }: { handleImageUpload: (e: React
         />
     </label>
 );
+
+

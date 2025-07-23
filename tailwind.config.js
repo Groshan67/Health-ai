@@ -1,16 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   content: [
-//     "./pages/**/*.{js,ts,jsx,tsx}",
-//     "./components/**/*.{js,ts,jsx,tsx}",
-//     "./app/**/*.{js,ts,jsx,tsx}", // اگر از App Directory استفاده می‌کنید
-//   ],
-//   theme: {
-//     extend: {},
-//   },
-//   plugins: [],
-// };
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -23,11 +10,16 @@ module.exports = {
       animation: {
         "fade-in": "fadeIn 0.5s ease-out",
         bounce: "bounce 1s infinite",
+        recording: "recording 1s infinite ease-in-out",
       },
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        recording: {
+          "0%, 100%": { color: "rgb(64, 68, 66)" }, // رنگ سبز (پیش‌فرض)
+          "50%": { color: "rgb(239, 68, 68)" }, // رنگ قرمز (هایلایت)
         },
       },
       colors: {

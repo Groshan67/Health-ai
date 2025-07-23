@@ -4,80 +4,79 @@ import { ins } from "./my-ins";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const { content } = await request.json();
+  const body = await request.json();
+  const { newMessage } = body;
 
   try {
-    let contents = null;
-
     const model = "gpt-4o";
-    if (!content[1]) {
-      contents = content[0];
-    } else {
-      contents = [
-        { type: "text", text: content[1] },
-        { type: "image_url", image_url: { url: content[0] } },
-      ];
+
+    // اگر هیچ متنی و تصویری ارسال نشده، خطا بده
+    if (!newMessage || (!newMessage.text && !newMessage.image)) {
+      throw new Error("پیام ارسال‌شده خالی است.");
     }
 
-    // تنظیم response به عنوان یک Stream
+    let userMessage;
+
+    if (!newMessage.image) {
+      // فقط متن وجود دارد
+      userMessage = {
+        role: "user",
+        content: newMessage.text,
+      };
+    } else {
+      // تصویر و متن وجود دارد
+      userMessage = {
+        role: "user",
+        content: [
+          { type: "text", text: newMessage.text },
+          { type: "image_url", image_url: { url: newMessage.image } },
+        ],
+      };
+    }
+
     const stream = new TransformStream();
     const writer = stream.writable.getWriter();
     const encoder = new TextEncoder();
 
-    // ایجاد درخواست stream به OpenAI
     const completion = await openai.chat.completions.create({
-      model: model,
+      model,
       messages: [
-        {
-          role: "system",
-          content: ins,
-        },
-        {
-          role: "user",
-          content: contents
-        },
+        { role: "system", content: ins },
+        userMessage,
       ],
-      stream: true // فعال کردن stream
+      stream: true,
     });
 
-    // پردازش پاسخ‌های stream شده
     (async () => {
       try {
         for await (const chunk of completion) {
-          // دریافت متن از chunk
-          const content = chunk.choices[0]?.delta?.content || '';
-
-          // ارسال داده به stream
+          const content = chunk.choices[0]?.delta?.content || "";
           if (content) {
             await writer.write(encoder.encode(content));
           }
-
-          // اگر usage وجود داشت، می‌توانید آن را هم پردازش کنید
-          if (chunk.usage) {
-            console.log('Usage:', chunk.usage);
-          }
         }
       } catch (error) {
-        console.error("Stream error:", error);
+        console.error("خطای استریم:", error);
       } finally {
         await writer.close();
       }
     })();
 
-    // برگرداندن stream به عنوان پاسخ
     return new Response(stream.readable, {
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
       },
     });
-
   } catch (error) {
-    console.error("Error fetching completion:", error);
+    console.error("خطا در دریافت پاسخ:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to fetch completion" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ error: "خطا در دریافت پاسخ از مدل" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
     );
   }
 }

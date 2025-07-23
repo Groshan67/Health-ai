@@ -178,6 +178,7 @@ const Chat = () => {
           {state.messages.map((message) => (
             <ResponseDisplay
               key={message.id}
+              image=""
               response={message.content}
               loading={false}
               type={message.type}

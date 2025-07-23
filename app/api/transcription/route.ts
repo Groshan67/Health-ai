@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error("API Error:", error);
         return new Response(
-            JSON.stringify({ error: "An error occurred" }),
+            JSON.stringify({ error: `An error occurred : ${error}` }),
             {
                 status: 500,
                 headers: { "Content-Type": "application/json" }

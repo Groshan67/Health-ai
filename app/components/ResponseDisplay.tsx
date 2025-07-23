@@ -2,6 +2,7 @@ interface ResponseDisplayProps {
     response: string;
     loading: boolean;
     type: 'user' | 'assistant';
+    image: string;
 }
 
 export const ResponseDisplay = ({ response, loading, type }: ResponseDisplayProps) => {

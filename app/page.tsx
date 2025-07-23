@@ -12,29 +12,29 @@ const Home = () => {
   }, []);
 
   const categories = {
-    // ['مدل 1']: "all",
-    // ['مدل 2']: "file-tune",
-    // ['مدل 3']: "completion",
-    // ['مدل 4']: "voice-chat",
+    ['مدل 1']: "all",
+    ['مدل 2']: "file-tune",
+    ['مدل 3']: "completion",
+    ['مدل 4']: "voice-chat",
     ['مدل 5']: "simple",
   };
 
-  return null;
+  //return null;
 
-  // return (
-  //   <main className={styles.main}>
-  //     <div className={styles.title}>
-  //       انتخاب مدل
-  //     </div>
-  //     <div className={styles.container}>
-  //       {Object.entries(categories).map(([name, url]) => (
-  //         <a key={name} className={styles.category} href={`/healthai/${url}`}>
-  //           {name}
-  //         </a>
-  //       ))}
-  //     </div>
-  //   </main>
-  // );
+  return (
+    <main className={styles.main}>
+      <div className={styles.title}>
+        انتخاب مدل
+      </div>
+      <div className={styles.container}>
+        {Object.entries(categories).map(([name, url]) => (
+          <a key={name} className={styles.category} href={`/healthai/${url}`}>
+            {name}
+          </a>
+        ))}
+      </div>
+    </main>
+  );
 
 };
 
